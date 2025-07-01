@@ -1,0 +1,45 @@
+{
+  "name": "NutriTest",
+  "short_name": "NutriTest",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f6f6f6",
+  "theme_color": "#4CAF50",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+<link rel="manifest" href="manifest.json">
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open('nutritest-cache').then(cache => {
+      return cache.addAll([
+        '/',
+        '/index.html',
+        '/manifest.json',
+        '/icon-192.png',
+        '/icon-512.png'
+      ]);
+    })
+  );
+});
+
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(response => response || fetch(e.request))
+  );
+});
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
